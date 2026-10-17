@@ -25,6 +25,7 @@ class Operator(models.Model):
         choices=Status.choices,
         default=Status.PENDING
     )
+    merchant_id = models.CharField(max_length=100, default="merch_default_id", help_text="Mock merchant account ID for payouts")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -15,6 +15,6 @@ class SeatLayoutAdmin(admin.ModelAdmin):
 
 @admin.register(Seat)
 class SeatAdmin(admin.ModelAdmin):
-    list_display = ("seat_number", "layout", "seat_type", "deck", "is_window", "is_women_only")
+    list_display = ("id", "seat_number", "layout", "seat_type", "deck", "is_window", "is_women_only")
     list_filter = ("seat_type", "deck", "is_window", "is_women_only")
     search_fields = ("seat_number", "layout__bus__registration_number")

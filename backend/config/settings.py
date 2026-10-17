@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_spectacular',
     'rest_framework_simplejwt.token_blacklist'
 ]
 
@@ -156,6 +157,8 @@ REST_FRAMEWORK={
         "rest_framework.authentication.SessionAuthentication",
     ),
 
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
@@ -172,4 +175,11 @@ SIMPLE_JWT ={
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
 
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'BuSaathi API',
+    'DESCRIPTION': 'API documentation for the BuSaathi bus ticketing platform.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
