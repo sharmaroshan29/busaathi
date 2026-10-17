@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User
+from .models import User, PassengerProfile
 
 
 # @admin.register(User) is a clean Python decorator equivalent to calling
@@ -13,15 +13,21 @@ class UserAdmin(BaseUserAdmin):
     Inherits from Django's built-in UserAdmin so that password hashing,
     staff/superuser toggles, and group permissions work securely out of the box.
     """
-
-    # Columns displayed in the main table list view inside Django Admin
     list_display = ("username", "email", "first_name", "last_name", "is_staff", "is_active")
-
-    # Adds a sidebar filter on the right side of the admin page
     list_filter = ("is_staff", "is_superuser", "is_active")
-
-    # Enables the search bar at the top of the User list page
-    search_fields = ("username", "email", "first_name", "last_name")
-
-    # Default sorting order in the admin table
+    search_fields = ("username", "email", "phone_number")
     ordering = ("username",)
+    fieldsets = BaseUserAdmin.fieldsets + (
+        (
+            "BuSaathi Verification & Contact",
+            {"fields": ("phone_number", "is_email_verified")},
+        ),
+    )
+
+@admin.register(PassengerProfile)
+class PassengerProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "full_name", "emergency_contact_phone", "created_at")
+    search_fields = ("user__username", "user__email", "full_name")
+
+
+
