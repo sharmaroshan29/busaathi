@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.operators.apps.OperatorsConfig',
     'apps.audit.apps.AuditConfig',
     'apps.trips.apps.TripsConfig',
+    'apps.bookings.apps.BookingsConfig',
     'apps.routes.apps.RoutesConfig',
     'apps.fleet.apps.FleetConfig',
     'django.contrib.admin',
