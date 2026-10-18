@@ -12,6 +12,10 @@ from .serializers import (
     UserOutputSerializer,
 )
 from .services import logout_user, register_passenger
+from django.contrib.auth.models import User
+from google.oauth2 import id_token
+from google.auth.transport import requests
+import os
 
 
 def health_check(request):
@@ -97,4 +101,53 @@ class LogoutAPIView(APIView):
             )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class GoogleLoginView(APIView):
+    """Recieve Google ID token from the frontend verifies it. 
+    Gets or creates the user , and return s BuSaathi JWT Tokens"""
+
+    def post(self, request):
+        token =request.data.get('credential')
+        if not token:
+            return Response({'error': 'No Google credential provided'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            # Verify the token against Google's public keys
+            # Replace YOUR_GOOGLE_CLIENT_ID with your actual Google OAuth Client ID
+            CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+
+            email = idinfo['email']
+            name = idinfo.get('name', '')
+            first_name = idinfo.get('given_name', '')
+            last_name = idinfo.get('family_name', '')
+
+            # Get or create the user in PostgreSQL
+            user, created = User.objects.get_or_create(
+                email=email,
+                defaults={
+                    'username': email,
+                    'first_name': first_name,
+                    'last_name': last_name
+                }
+            )
+
+            # Issue standard SimpleJWT tokens for session management
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': {
+                    'email': user.email,
+                    'name': f"{user.first_name} {user.last_name}".strip()
+                }
+            }, status=status.HTTP_200_OK)
+
+        except ValueError as e:
+            return Response({'error': f'Invalid Google Token: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 

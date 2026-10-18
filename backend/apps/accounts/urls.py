@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from . import views
 
+
 app_name ="accounts"
 
 urlpatterns = [
@@ -12,6 +13,8 @@ urlpatterns = [
     # SimpleJWT Built-in Views (checks username/password + is_active and returns JWT pair)
     path("login/", TokenObtainPairView.as_view(), name="login"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
+    path('auth/google/', views.GoogleLoginView.as_view(), name='google-login'),
+
 
 ]
 
